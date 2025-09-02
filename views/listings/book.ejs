@@ -1,0 +1,23 @@
+<% layout("layouts/boilerplate") %>
+
+<h1>Book <%= listing.title %></h1>
+
+<form action="/listings/<%= listing._id %>/book" method="POST">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+  <div class="mb-3">
+    <label for="aadharNumber" class="form-label">Aadhar Number</label>
+    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" required>
+  </div>
+  <div class="mb-3">
+    <label for="dateOfBooking" class="form-label">Date of Booking</label>
+    <input type="date" class="form-control" id="dateOfBooking" name="dateOfBooking" required>
+  </div>
+  <div class="mb-3">
+    <label for="dateOfExit" class="form-label">Date of Exit</label>
+    <input type="date" class="form-control" id="dateOfExit" name="dateOfExit" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Book</button>
+</form>
