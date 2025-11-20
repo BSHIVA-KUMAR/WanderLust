@@ -69,9 +69,9 @@ const sessionOptions = {
 };
  
 
-// app.get("/", (req, res) =>{
-//     res.send("hi, i'm root");
-// });
+app.get("/", (req, res) =>{
+    res.redirect("/listings");
+});
 
 app.use(session(sessionOptions));
 //flash should be before routes and after session
@@ -87,6 +87,7 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.mapToken = process.env.MAP_TOKEN || '';
     next();
 });
 

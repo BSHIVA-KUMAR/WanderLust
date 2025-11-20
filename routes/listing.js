@@ -20,6 +20,9 @@ router.route("/")
     wrapAsync(listingController.createListing) // Create
   );
 
+// Search Route - MUST be before /:id route to avoid matching "search" as an ID
+router.get("/search", wrapAsync(listingController.searchListings));
+
 // New Route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 

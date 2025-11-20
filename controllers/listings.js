@@ -18,6 +18,19 @@ module.exports.renderNewForm = (req, res) => {
 
 
 module.exports.showListing = async (req, res) => {
+  // Prevent "search", "new", "category" from being treated as IDs
+  const reservedWords = ['search', 'new', 'category'];
+  if (reservedWords.includes(req.params.id.toLowerCase())) {
+    req.flash('error', 'Invalid listing ID!');
+    return res.redirect('/listings');
+  }
+
+  // Check if ID is a valid MongoDB ObjectId format
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    req.flash('error', 'Invalid listing ID!');
+    return res.redirect('/listings');
+  }
+
   const listing = await Listing.findById(req.params.id)
     .populate({
       path: 'reviews',
@@ -30,8 +43,14 @@ module.exports.showListing = async (req, res) => {
     return res.redirect('/listings');
   }
 
+  // Filter out any null or deleted reviews
+  if (listing.reviews) {
+    listing.reviews = listing.reviews.filter(review => review !== null && review !== undefined);
+  }
+
   const isOwner = req.user && listing.owner.equals(req.user._id);
   const currentUser = req.user;
+  // mapToken is already available via res.locals from middleware
   res.render('listings/show', { listing, isOwner, currentUser });
 };
 
@@ -131,6 +150,48 @@ module.exports.filterByCategory = async (req, res) => {
     res.render('listings/index', { allListings: listings, category });
   } catch (e) {
     req.flash('error', 'Unable to fetch listings. Please try again.');
+    res.redirect('/listings');
+  }
+};
+
+module.exports.searchListings = async (req, res) => {
+  const { q } = req.query;
+  
+  console.log('Search query received:', q); // Debug log
+  
+  if (!q || q.trim() === '') {
+    req.flash('error', 'Please enter a search term.');
+    return res.redirect('/listings');
+  }
+
+  try {
+    const searchQuery = q.trim();
+    console.log('Searching for:', searchQuery); // Debug log
+    
+    // Search in title, location, country, and description
+    const listings = await Listing.find({
+      $or: [
+        { title: { $regex: searchQuery, $options: 'i' } },
+        { location: { $regex: searchQuery, $options: 'i' } },
+        { country: { $regex: searchQuery, $options: 'i' } },
+        { description: { $regex: searchQuery, $options: 'i' } }
+      ]
+    });
+
+    console.log('Found', listings.length, 'listings'); // Debug log
+
+    if (!listings.length) {
+      req.flash('info', `No listings found for "${searchQuery}". Showing all listings.`);
+      return res.redirect('/listings');
+    }
+
+    res.render('listings/index', { 
+      allListings: listings, 
+      searchQuery: searchQuery 
+    });
+  } catch (e) {
+    console.error('Search error:', e); // Debug log
+    req.flash('error', 'Unable to perform search. Please try again.');
     res.redirect('/listings');
   }
 };

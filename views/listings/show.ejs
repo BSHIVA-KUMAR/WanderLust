@@ -1,9 +1,15 @@
 <% layout("/layouts/boilerplate") %>
 <script>
-  const mapToken = "<%= process.env.MAP_TOKEN %>";
-  const listing = "<%- JSON.stringify(listing) %>";
+  const mapToken = "<%= locals.mapToken || '' %>";
+  const listing = <%- JSON.stringify(listing) %>;
 </script>
 <style>
+  #map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 1rem;
+  }
 </style>
 <div class="row mt-3">
   <div class="col-8 offset-3">
@@ -108,37 +114,121 @@
     <% } %>
    
     <!-- display reviews only if exists -->
-  <% if(listing.reviews.length > 0) { %>
+  <% if(listing.reviews && listing.reviews.length > 0) { %>
     <div class="row">
       <p><b>All Reviews</b></p>
       <% listing.reviews.forEach(review => { %>
-        <div class="card col-5 ms-3 mb-3">
-          <div class="card-body">
-            <h5 class="card-title">@<%= review.author ? review.author.username : 'Anonymous' %></h5>
-            <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
-            <p class="card-text"><%= review.comment %></p>
-            <% if (currUser && currUser._id.equals(review.author._id)) { %>
-              <form 
-                class="mb-3"
-                method="POST"
-                action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                <button class="btn btn-sm btn-dark">Delete</button>
-              </form>
-            <% } %>
+        <% if (review && review._id) { %>
+          <div class="card col-5 ms-3 mb-3">
+            <div class="card-body">
+              <h5 class="card-title">@<%= review.author ? review.author.username : 'Anonymous' %></h5>
+              <p class="starability-result card-text" data-rating="<%= review.rating || 0 %>"></p>
+              <p class="card-text"><%= review.comment || 'No comment' %></p>
+              <% if (currUser && review.author && currUser._id.equals(review.author._id)) { %>
+                <form 
+                  class="mb-3"
+                  method="POST"
+                  action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button class="btn btn-sm btn-dark">Delete</button>
+                </form>
+              <% } %>
+            </div>
           </div>
-        </div>
+        <% } %>
       <% }) %>
     </div>
     <% } %>
   </div>
-  <!-- <div class="col-8 offset-3 mb-3">
+  
+  <div class="col-8 offset-3 mb-3">
     <hr>
     <h3>Where you'll be?</h3>
-    <div id="map"></div>
+    <% if (listing.geometry && listing.geometry.coordinates && Array.isArray(listing.geometry.coordinates) && listing.geometry.coordinates.length === 2) { %>
+      <div id="map"></div>
+      <div id="map-placeholder" style="display: none; text-align: center; padding: 2rem; background-color: #f8f9fa; border-radius: 10px; margin-top: 1rem;">
+        <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+        <p class="text-muted">Map is loading...</p>
+        <p class="text-muted small">If the map doesn't appear, please ensure MAP_TOKEN is set in your .env file.</p>
+      </div>
+    <% } else { %>
+      <div style="text-align: center; padding: 2rem; background-color: #f8f9fa; border-radius: 10px;">
+        <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
+        <p class="text-muted">Location map is not available for this listing.</p>
+        <p class="text-muted small">The listing location: <strong><%= listing.location %>, <%= listing.country %></strong></p>
+      </div>
+    <% } %>
   </div>
-</div> -->
+</div>
 
-<script src="/js/map.js">
+<script>
+  // Wait for mapboxgl to be available
+  function initMap() {
+    if (typeof mapboxgl === 'undefined') {
+      setTimeout(initMap, 100);
+      return;
+    }
 
+    const mapContainer = document.getElementById('map');
+    const mapPlaceholder = document.getElementById('map-placeholder');
+    
+    if (mapToken && mapToken.trim() !== '' && typeof listing !== 'undefined' && listing && listing.geometry && listing.geometry.coordinates && Array.isArray(listing.geometry.coordinates) && listing.geometry.coordinates.length === 2) {
+      try {
+        mapboxgl.accessToken = mapToken;
+        
+        const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: listing.geometry.coordinates,
+          zoom: 9
+        });
+
+        map.on('load', function() {
+          const marker = new mapboxgl.Marker({ color: "red" })
+            .setLngLat(listing.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({ offset: 25 })
+              .setHTML(`<h4>${listing.title}</h4><p>${listing.location}</p>`))
+            .addTo(map);
+          
+          // Hide placeholder if map loads successfully
+          if (mapPlaceholder) {
+            mapPlaceholder.style.display = 'none';
+          }
+        });
+
+        map.on('error', function(e) {
+          console.error('Map error:', e);
+          showMapError();
+        });
+      } catch(error) {
+        console.error('Map initialization error:', error);
+        showMapError();
+      }
+    } else {
+      showMapError();
+    }
+
+    function showMapError() {
+      if (mapContainer) {
+        mapContainer.innerHTML = `
+          <div style="text-align: center; padding: 2rem; background-color: #fff3cd; border-radius: 10px; border: 1px solid #ffc107;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #856404; margin-bottom: 1rem;"></i>
+            <p class="text-warning"><strong>Map unavailable</strong></p>
+            <p class="text-muted small">Location: <strong>${listing.location}, ${listing.country}</strong></p>
+            <p class="text-muted small">Please ensure MAP_TOKEN is set in your .env file to view the map.</p>
+          </div>
+        `;
+      }
+      if (mapPlaceholder) {
+        mapPlaceholder.style.display = 'none';
+      }
+    }
+  }
+
+  // Start initialization
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+  } else {
+    initMap();
+  }
 </script>
 <link rel="stylesheet" href="/path/to/starability.css">

@@ -1,13 +1,55 @@
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
+const User = require("../models/user.js");
 
 //...............connection...
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
+// Sample coordinates for locations (approximate)
+const locationCoordinates = {
+    "Malibu": [-118.7798, 34.0259],
+    "New York City": [-74.0060, 40.7128],
+    "Aspen": [-106.8175, 39.1911],
+    "Florence": [11.2558, 43.7696],
+    "Portland": [-122.6784, 45.5152],
+    "Cancun": [-86.8515, 21.1619],
+    "Lake Tahoe": [-120.0324, 39.0968],
+    "Los Angeles": [-118.2437, 34.0522],
+    "Verbier": [7.2264, 46.0967],
+    "Serengeti National Park": [34.8333, -2.3333],
+    "Amsterdam": [4.9041, 52.3676],
+    "Fiji": [178.0650, -17.7134],
+    "Cotswolds": [-1.8333, 51.8333],
+    "Boston": [-71.0589, 42.3601],
+    "Bali": [115.1889, -8.4095],
+    "Banff": [-115.5708, 51.1784],
+    "Miami": [-80.1918, 25.7617],
+    "Phuket": [98.3984, 7.8804],
+    "Scottish Highlands": [-4.5, 57.5],
+    "Dubai": [55.2708, 25.2048],
+    "Montana": [-110.3626, 46.9219],
+    "Mykonos": [25.3281, 37.4467],
+    "Costa Rica": [-83.7534, 9.7489],
+    "Charleston": [-79.9311, 32.7765],
+    "Tokyo": [139.6503, 35.6762],
+    "New Hampshire": [-71.5653, 43.4525],
+    "Maldives": [73.2207, 3.2028],
+    "Monaco": [7.4246, 43.7384],
+    "Paris": [2.3522, 48.8566],
+    "London": [-0.1276, 51.5074],
+    "Santorini": [25.4615, 36.3932],
+    "County Kerry": [-9.7431, 52.0599],
+    "Loire Valley": [1.0544, 47.4132],
+    "Bavaria": [11.4975, 48.1351],
+    "Yosemite": [-119.5383, 37.8651],
+    "Patagonia": [-71.3025, -41.1335]
+};
+
 main()
     .then(() => {
         console.log("connected to DB");
+        initDB();
     })
     .catch((err) => {
         console.log(err);
@@ -19,8 +61,28 @@ async function main(){
 
 const initDB = async () => {
     await Listing.deleteMany({});
-    initData.data = initData.data.map((obj) => ({...obj, owner: "662b743bbdec5e888263212b"}));
+    
+    // Try to find an existing user, or create a default one
+    let defaultUser = await User.findOne();
+    if (!defaultUser) {
+        // Create a default user for listings
+        const newUser = new User({ email: "admin@wanderlust.com", username: "admin" });
+        defaultUser = await User.register(newUser, "admin123");
+        console.log("Created default user: admin@wanderlust.com / admin123");
+    }
+    
+    initData.data = initData.data.map((obj) => {
+        const coords = locationCoordinates[obj.location] || [-74.0060, 40.7128]; // Default to NYC if not found
+        return {
+            ...obj, 
+            owner: defaultUser._id,
+            geometry: {
+                type: 'Point',
+                coordinates: coords
+            }
+        };
+    });
     await Listing.insertMany(initData.data);
-    console.log("data was initialized");
+    console.log("Data was initialized with", initData.data.length, "listings");
+    mongoose.connection.close();
 };
-initDB();

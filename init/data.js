@@ -377,6 +377,154 @@ const sampleListings = [
       country: "Costa Rica",
       category: "amazing_pools",
     },
+    // Additional Boats
+    {
+      title: "Luxury Yacht in Monaco",
+      description:
+        "Experience the glamour of the French Riviera aboard this stunning luxury yacht. Perfect for exploring the Mediterranean coast.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8eWFjaHR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 8000,
+      location: "Monaco",
+      country: "Monaco",
+      category: "boats",
+    },
+    // Additional Iconic City
+    {
+      title: "Skyline Apartment in Paris",
+      description:
+        "Stay in the heart of Paris with breathtaking views of the Eiffel Tower. Experience the romance of the City of Light.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGFyaXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 2800,
+      location: "Paris",
+      country: "France",
+      category: "iconic_city",
+    },
+    {
+      title: "Modern Loft in London",
+      description:
+        "Explore London from this chic loft in Shoreditch. Close to trendy cafes, galleries, and the vibrant nightlife.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bG9uZG9ufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 2200,
+      location: "London",
+      country: "United Kingdom",
+      category: "iconic_city",
+    },
+    {
+      title: "Penthouse in Dubai Marina",
+      description:
+        "Luxury living in Dubai Marina with panoramic views of the Persian Gulf. World-class amenities and stunning architecture.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZHViYWl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 4500,
+      location: "Dubai",
+      country: "United Arab Emirates",
+      category: "iconic_city",
+    },
+    // Additional Amazing Pools
+    {
+      title: "Infinity Pool Villa in Santorini",
+      description:
+        "Watch the sunset from your private infinity pool overlooking the Aegean Sea. A truly magical experience in Santorini.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c2FudG9yaW5pfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 3200,
+      location: "Santorini",
+      country: "Greece",
+      category: "amazing_pools",
+    },
+    // Castles
+    {
+      title: "Medieval Castle in Ireland",
+      description:
+        "Live like royalty in this authentic medieval castle in the Irish countryside. Rich history and breathtaking landscapes await.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1580584126903-c17d41830450?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FzdGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 3500,
+      location: "County Kerry",
+      country: "Ireland",
+      category: "castles",
+    },
+    {
+      title: "Château in Loire Valley",
+      description:
+        "Experience French elegance in this stunning château surrounded by vineyards. A perfect blend of history and luxury.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1539650116574-75c0c6d73a6a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Y2hhdGVhdXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 4200,
+      location: "Loire Valley",
+      country: "France",
+      category: "castles",
+    },
+    {
+      title: "Neuschwanstein-Inspired Castle",
+      description:
+        "Stay in a fairytale castle inspired by Neuschwanstein. Towering spires, grand halls, and mountain views create an unforgettable experience.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1539650116574-75c0c6d73a6a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Y2FzdGxlJTIwYmF2YXJpYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 3800,
+      location: "Bavaria",
+      country: "Germany",
+      category: "castles",
+    },
+    // Camping
+    {
+      title: "Glamping Tent in Yosemite",
+      description:
+        "Experience the great outdoors in comfort with this luxury glamping tent. Wake up to stunning views of Yosemite's granite cliffs.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FtcGluZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 850,
+      location: "Yosemite",
+      country: "United States",
+      category: "camping",
+    },
+    {
+      title: "Safari Camp in Serengeti",
+      description:
+        "Sleep under the African stars in this authentic safari camp. Witness the Great Migration and experience wildlife up close.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FtcGluZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 1200,
+      location: "Serengeti National Park",
+      country: "Tanzania",
+      category: "camping",
+    },
+    {
+      title: "Mountain Camp in Patagonia",
+      description:
+        "Adventure awaits in this remote mountain camp in Patagonia. Perfect for hiking, stargazing, and connecting with nature.",
+      image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1578645510447-e20b4311e3ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDF8fGNhbXBpbmd8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
+      },
+      price: 950,
+      location: "Patagonia",
+      country: "Argentina",
+      category: "camping",
+    },
   ];
   
   module.exports = { data: sampleListings };
